@@ -7,6 +7,12 @@ A Python implementation of an MCP server for Bitbucket integration. MCP (Model C
 ```bash
 # Install the server locally
 git clone https://github.com/kallows/mcp-bitbucket.git
+cd mcp-bitbucket
+
+# Install dependencies using uv (recommended) or pip
+uv install
+# or
+pip install -e .
 ```
 
 ## Tools Available
@@ -62,18 +68,155 @@ export BITBUCKET_USERNAME="your-username"
 export BITBUCKET_APP_PASSWORD="your-app-password"
 ```
 
+### Creating Bitbucket App Password
+
+1. Go to Bitbucket Settings → App passwords
+2. Create a new app password with these permissions:
+   - Repositories: Read, Write, Admin (for delete operations)
+   - Pull requests: Read, Write
+   - Issues: Read, Write
+   - Account: Read (for workspace operations)
+
+## Claude Desktop Configuration
+
+Add this configuration to your `claude_desktop_config.json`:
+
+### Windows
+```json
+{
+  "mcpServers": {
+    "bitbucket-api": {
+      "command": "C:\\\\Users\\\\YOURUSERNAME\\\\.local\\\\bin\\\\uv.exe",
+      "args": [
+        "--directory",
+        "D:\\\\mcp\\\\mcp-bitbucket",
+        "run",
+        "-m",
+        "mcp_bitbucket.server"
+      ],
+      "env": {
+        "BITBUCKET_USERNAME": "your-username",
+        "BITBUCKET_APP_PASSWORD": "your-app-password"
+      }
+    }
+  }
+}
+```
+
+### Mac and Linux
+```json
+{
+  "mcpServers": {
+    "bitbucket-api": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory", "/path/to/mcp-bitbucket",
+        "-m", "mcp_bitbucket.server"
+      ],
+      "env": {
+        "BITBUCKET_USERNAME": "your-username",
+        "BITBUCKET_APP_PASSWORD": "your-app-password"
+      }
+    }
+  }
+}
+```
+
+**⚠️ Important:** You must restart Claude Desktop after modifying the configuration file.
+
+## Usage
+
+Once configured, the Bitbucket tools will be available in Claude Desktop. You can:
+
+- Ask Claude to create repositories and branches
+- Read and write files in your repositories
+- Create and manage issues
+- Search for repositories
+- Create pull requests
+- Manage repository files
+
+Example queries:
+- "Create a new repository called 'my-project' in my personal workspace"
+- "Create a new branch called 'feature-xyz' in the my-project repository"
+- "Create a README.md file in my-project with some basic content"
+- "Search for repositories that contain 'python' in the name"
+
+## Workspace Configuration
+
+The tools default to the "kallows" workspace, but you can:
+- Specify a different workspace using the `workspace` parameter
+- Use `workspace='~'` to work with your personal workspace
+- Create repositories in team workspaces if you have permissions
+
+## Running Tests
+
+The project includes unit and integration tests:
+
+```bash
+# Run all tests
+python -m unittest discover tests
+
+# Run specific test files
+python -m unittest tests.test_bb_api
+python -m unittest tests.test_bb_integration
+
+# Run with verbose output
+python -m unittest discover tests -v
+```
+
+## Development
+
+### Adding New Tools
+
+1. Add the tool definition to `handle_list_tools()` in `server.py`
+2. Add the implementation to `handle_call_tool()` in `server.py`
+3. Add corresponding tests
+4. Update this README
+
+### Error Handling
+
+The server includes comprehensive error handling:
+- Permission errors with helpful guidance
+- Network connectivity issues
+- Invalid parameters and validation
+- Bitbucket API rate limiting
+
 ## Project Structure
 
 ```
 mcp-bitbucket/
 ├── README.md
 ├── pyproject.toml
+├── uv.lock
+├── .gitignore
+├── .python-version
 ├── src/
-│   └── bitbucket_api/
+│   └── mcp_bitbucket/
 │       ├── __init__.py
 │       └── server.py
 └── tests/
-    ├── __init__.py
+    ├── README.md
     ├── test_bb_api.py
     └── test_bb_integration.py
 ```
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+## Support
+
+For issues and questions:
+- Check the Bitbucket API documentation
+- Verify your app password permissions
+- Review the test files for usage examples
+- Create an issue in this repository
