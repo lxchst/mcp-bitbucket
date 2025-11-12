@@ -65,7 +65,7 @@ The server requires Bitbucket credentials to be set up as environment variables:
 
 ```bash
 export BITBUCKET_USERNAME="your-username"
-export BITBUCKET_APP_PASSWORD="your-app-password"
+export BITBUCKET_TOKEN="your-app-password"
 ```
 
 ### Creating Bitbucket App Password
@@ -96,7 +96,7 @@ Add this configuration to your `claude_desktop_config.json`:
       ],
       "env": {
         "BITBUCKET_USERNAME": "your-username",
-        "BITBUCKET_APP_PASSWORD": "your-app-password"
+        "BITBUCKET_TOKEN": "your-app-password"
       }
     }
   }
@@ -116,7 +116,7 @@ Add this configuration to your `claude_desktop_config.json`:
       ],
       "env": {
         "BITBUCKET_USERNAME": "your-username",
-        "BITBUCKET_APP_PASSWORD": "your-app-password"
+        "BITBUCKET_TOKEN": "your-app-password"
       }
     }
   }
